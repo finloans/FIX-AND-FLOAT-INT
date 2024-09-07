@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinLoans Float and Fixed ROI Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+        }
+        .comparison {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <!-- Ensure the path to your logo is correct -->
+   <img src="finloans%20logo.png" alt="FinLoans Logo" />
+
+    <h2>FinLoans Float and Fixed ROI Calculator</h2>
+
+    <!-- Loan Amount Input -->
+    <label for="loanAmount">Loan Amount (₹):</label>
+    <input type="number" id="loanAmount" placeholder="Enter loan amount" />
+
+    <!-- Floating Rate Input -->
+    <label for="floatingRate">Floating Interest Rate (%):</label>
+    <input type="number" id="floatingRate" placeholder="Enter floating rate" />
+
+    <!-- Fixed Rate Input -->
+    <label for="fixedRate">Fixed Interest Rate (%):</label>
+    <input type="number" id="fixedRate" placeholder="Enter fixed rate" />
+
+    <!-- Tenure Input -->
+    <label for="tenure">Tenure (Years):</label>
+    <input type="number" id="tenure" placeholder="Enter tenure in years" />
+
+    <!-- Calculate Button -->
+    <button onclick="calculateEMI()">Calculate EMI</button>
+
+    <!-- Results Section -->
+    <div class="result" id="emiResult"></div>
+
+    <!-- Comparison Section -->
+    <div class="result comparison" id="comparisonResult"></div>
+</div>
+
+<script>
+function calculateEMI() {
+    // Get input values from the user
+    let loanAmount = parseFloat(document.getElementById('loanAmount').value);
+    let floatingRate = parseFloat(document.getElementById('floatingRate').value);
+    let fixedRate = parseFloat(document.getElementById('fixedRate').value);
+    let tenure = parseFloat(document.getElementById('tenure').value);
+
+    // Check if any fields are empty or zero
+    if (!loanAmount || !floatingRate || !fixedRate || !tenure) {
+        document.getElementById('emiResult').innerHTML = "Please fill out all fields correctly.";
+        return;
+    }
+
+    // Convert tenure to months
+    let months = tenure * 12;
+
+    // Calculate EMI for Floating Rate
+    let monthlyFloatingRate = (floatingRate / 12) / 100;
+    let emiFloating = (loanAmount * monthlyFloatingRate * Math.pow((1 + monthlyFloatingRate), months)) /
+                      (Math.pow((1 + monthlyFloatingRate), months) - 1);
+
+    // Calculate EMI for Fixed Rate
+    let monthlyFixedRate = (fixedRate / 12) / 100;
+    let emiFixed = (loanAmount * monthlyFixedRate * Math.pow((1 + monthlyFixedRate), months)) /
+                   (Math.pow((1 + monthlyFixedRate), months) - 1);
+
+    // Display the EMI results for both rates
+    document.getElementById('emiResult').innerHTML = `
+        <strong>Floating EMI: ₹${emiFloating.toFixed(2)}</strong><br>
+        <strong>Fixed EMI: ₹${emiFixed.toFixed(2)}</strong>
+    `;
+
+    // Display the comparison (which is higher/lower)
+    let comparisonMessage;
+    if (emiFloating > emiFixed) {
+        comparisonMessage = "The Floating Rate EMI is higher than the Fixed Rate EMI.";
+    } else if (emiFloating < emiFixed) {
+        comparisonMessage = "The Fixed Rate EMI is higher than the Floating Rate EMI.";
+    } else {
+        comparisonMessage = "Both Floating and Fixed EMIs are equal.";
+    }
+
+    document.getElementById('comparisonResult').innerHTML = comparisonMessage;
+}
+</script>
+
+</body>
+</html>
+
